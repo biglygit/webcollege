@@ -6,7 +6,8 @@ var indexObj={
         var mySwiper = new Swiper('.swiper-container', {
             autoplay: 1000,//可选选项，自动滑动
             slidesPerView: 5,
-            loop: true
+            loop: true,
+            autoplayDisableOnInteraction:false,
         })
     },
     //新闻列表 上
@@ -19,7 +20,7 @@ var indexObj={
                 type:1
             },
             success:function (data) {
-                console.log(data)
+                //console.log(data)
                 var result=data.result;
                 indexObj.showMessage(0,result)
 
@@ -36,7 +37,7 @@ var indexObj={
                 type:2
             },
             success:function (data) {
-                console.log(data)
+                //console.log(data)
                 var result=data.result;
                 indexObj.showMessage(1,result)
             }
@@ -79,7 +80,7 @@ var indexObj={
                 type:3
             },
             success:function (data) {
-                console.log(data)
+                //console.log(data)
                 var result=data.result;
                 for(var i=1;i<result.length;i++){
                     $(".footer1 ul").append('<li class="swiper-slide"> <img src="'
@@ -87,6 +88,9 @@ var indexObj={
                         +indexObj.eclipseA(result[i].title,50)+'</p></li>')
                 }
                 indexObj.swi()
+                $('.swiper-container img').on('mousedown',function (e) {
+                    e.preventDefault()
+                })
             }
         })
     },
@@ -106,6 +110,7 @@ var indexObj={
 }
 indexObj.newsTop();
 indexObj.newsBottom();
-indexObj.hotWordImg()
+indexObj.hotWordImg();
+
 
 

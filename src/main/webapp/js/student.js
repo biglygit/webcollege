@@ -27,25 +27,51 @@ var $ind=localStorage.getItem("studentIndex")
 if($ind){
 	a($(".leftNav li").eq($ind),parseInt($ind)+1)
 }
-
+var $rol=localStorage.getItem("rol")
+console.log($rol)
 var studentObj={
 	//列表
-	signList:function () {
+	signList:function (pagenum) {
 		$.ajax({
 			type:"post",
 			url:urlT+"/api/signin/list.json",
 			data:{
-				token:localStorage.getItem("token")
+				token:localStorage.getItem("token"),
+                pagenum:pagenum
 			},
 			success:function (data) {
 				console.log(data)
-				if(data.code==10001){
-					alert(data.message)
-				}else{
+                if(data.code==10001){
+                    alert("用户未登录");
+					$(".downloadBtn").hide()
+					$(".studentYe").hide()
+                    //window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    $(".downloadBtn").hide()
+                    $(".studentYe").hide()
+                   // window.location.href="login.vm"
+                }else{
+                    $(".downloadBtn").show()
                     for(var i=0;i<data.result.length;i++){
                         $(".ratingForm table tbody").append(studentObj.getSignList(data.result[i]))
 
                     }
+                    if($rol==1 || $rol==2){
+                        $(".studentYe").show()
+					}else{
+                        $(".studentYe").hide()
+					}
+					//分页器
+                    var p=data.pages;
+                    $("#page").paging({
+                        pageNo:data.pagenum,
+                        totalPage: p,
+                        callback: function(num) {
+                            $(".ratingForm table tbody").html("")
+                            studentObj.signList(num)
+                        }
+                    })
 				}
 
 
@@ -53,8 +79,14 @@ var studentObj={
 		})
     },
 	getSignList:function (data) {
+		console.log(data)
+		if(data.userName){
+			var uName=data.userName
+		}else{
+			var uName=data.realName
+		}
 		var list="<tr><td>"
-			+data.realName+"</td><td>"
+			+uName+"</td><td>"
 			+data.idCard+"</td><td>"
 			+new Date(data.createTime).toLocaleDateString()+"</td></tr>"
     	return list
@@ -75,35 +107,21 @@ var studentObj={
                 userId:userID
             },
             success:function (data) {
-
                 console.log(data)
                 $(".ratingForm table tbody").html("")
+				$("#page").hide()
 				for(var i=0;i<data.result.length;i++){
 					$(".ratingForm table tbody").append(studentObj.getSignList(data.result[i]))
-
 				}
-
             }
         })
 	},
 	//安全责任书
-    manual:function (typeNumber,index) {
-        $.ajax({
-            type:"post",
-            url:urlT+"/api/baseInfo/searchOne.json",
-            data:{
-                token:localStorage.getItem("token"),
-                contentType:typeNumber
-            },
-            success:function (dataA) {
-                //console.log(dataA)
-                var da=dataA.data
-                $(".ri"+index).find(".word").html(da.content);
-            }
-        })
+    manual:function (word) {
+		console.log(word)
+     	//下载  下载文件接口:
+       //http://47.98.114.223/api/file/download.json?fileName=15304409594293.0版本微信相关.docx
+		window.location.href=urlT+"/api/file/download.json?fileName="+word;
     }
 }
-studentObj.signList()
-//安全责任书
-studentObj.manual(23,2)
-studentObj.manual(24,3)
+studentObj.signList(1)

@@ -13,42 +13,53 @@ var AdminTeachingR={
         var resourceName=$(".newsBox"+ind+" .tit").val();
         //var createTime=;
         //var link=;
+        /*
+        * 企业项目、任务库、项目库：标题、时间、图片、内容
+        * 图片库、连接库、视频库、讲座库：标题、连接、图片
+        * 教学视频：标题、时间、连接、图片、内容
+        * */
         if(index==null){//有标题和连接
             var link=$(".newsBox"+ind+" .linkT").val();
+            var image=$(".newsBox"+ind+" img").attr("src")
             if(resourceName=="" || link==""){
                 alert("请全部填写")
             }else if($("#avatar"+v).attr("src")=="img/auditImgDefault.png"){
                 alert("请上传图片")
             }else{
-                AdminTeachingR.ajaxA(type,resourceName,link)
+                AdminTeachingR.ajaxA(type,resourceName,link,image)
             }
-        }else if(index==8){//标题、时间、连接 教学视频
-            var createTime=$(".newsBox"+ind+" .createTime").val();
+        }else if(index==4){//标题、时间、连接 教学视频
+            var createTime=$(".newsBox"+ind+" .timeA").val();
+            createTime=createTime.split("T").join(" ")+":00"
             var link=$(".newsBox"+ind+" .linkT").val();
             var content=eval("ue"+index).getContent();
+            var image=$(".newsBox"+ind+" img").attr("src")
             if(content=="" || resourceName=="" || link=="" || createTime==""){
                 alert("请全部填写")
             }else if($("#avatar"+v).attr("src")=="img/auditImgDefault.png"){
                 alert("请上传图片")
             }else {
-                AdminTeachingR.ajaxB(type, resourceName, link, createTime, content)
+                AdminTeachingR.ajaxB(type, resourceName, link, createTime, content,image)
             }
         }else{
-            var createTime=$(".newsBox"+ind+" .createTime").val();
+            var createTime=$(".newsBox"+ind+" .timeA").val();
+            createTime=createTime.split("T").join(" ")+":00"
             var content=eval("ue"+index).getContent();
+            var image=$(".newsBox"+ind+" img").attr("src")
             if(content=="" || resourceName=="" || createTime==""){
                 alert("请全部填写")
             }else if($("#avatar"+v).attr("src")=="img/auditImgDefault.png"){
                 alert("请上传图片")
             }else {
-                AdminTeachingR.ajaxB(type, resourceName, createTime, content)
+                AdminTeachingR.ajaxC(type, resourceName, createTime, content,image)
             }
         }
 
     },
 
+    //图片库、连接库、视频库、讲座库：标题、连接、图片
 
-    ajaxA:function(type,resourceName,link){
+    ajaxA:function(type,resourceName,link,image){
         $.ajax({
             type:"post",
             url:urlT+"/api/resource/add.json",
@@ -57,41 +68,26 @@ var AdminTeachingR={
                 resourceName:resourceName,
                 type:type,
                 link:link,
+                image:image
 
             },
             success:function (data) {
-                console.log(data)
-                if(data.code==200){//成功
-                    alert("上传成功")
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
                 }else{
-                    alert(data.message)
+                    alert("上传成功")
                 }
             }
 
         })
     },
-    ajaxB:function(type,resourceName,content,link){
-        $.ajax({
-            type:"post",
-            url:urlT+"/api/resource/add.json",
-            data:{
-                token:localStorage.getItem("token"),
-                resourceName:resourceName,
-                type:type,
-                link:link
-            },
-            success:function (data) {
-                console.log(data)
-                if(data.code==200){//成功
-                    alert("上传成功")
-                }else{
-                    alert(data.message)
-                }
-            }
-
-        })
-    },
-    ajaxC:function(type,resourceName,createTime,content){
+    //教学视频：标题、时间、连接、图片、内容
+    ajaxB:function(type, resourceName, link, createTime, content,image){
         $.ajax({
             type:"post",
             url:urlT+"/api/resource/add.json",
@@ -100,14 +96,48 @@ var AdminTeachingR={
                 resourceName:resourceName,
                 type:type,
                 createTime:createTime,
-                content:content
+                content:content,
+                link:link,
+                image:image
             },
             success:function (data) {
-                console.log(data)
-                if(data.code==200){//成功
-                    alert("上传成功")
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
                 }else{
-                    alert(data.message)
+                    alert("上传成功")
+                }
+            }
+
+        })
+    },
+    // 企业项目：标题、时间、图片、内容
+    ajaxC:function(type, resourceName, createTime, content,image){
+        $.ajax({
+            type:"post",
+            url:urlT+"/api/resource/add.json",
+            data:{
+                token:localStorage.getItem("token"),
+                resourceName:resourceName,
+                type:type,
+                createTime:createTime,
+                content:content,
+                image:image
+            },
+            success:function (data) {
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
+                }else{
+                    alert("上传成功")
                 }
             }
 
@@ -117,7 +147,7 @@ var AdminTeachingR={
 
     //单图上传  待调试
     imgUpLoad:function (fileId, ImgId) {
-        console.log(fileId,ImgId)
+        //console.log(fileId,ImgId)
         $.ajaxFileUpload({
             url :  urlT+ "/api/file/upload.json",
             type : 'post',

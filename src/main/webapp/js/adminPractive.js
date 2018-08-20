@@ -10,7 +10,7 @@ var AdminPractiveObject={
 
     },
     //上传内容
-    saveAll:function(index,v){
+    saveAll:function(index,v,b){
 
 
         if(AdminPractiveObject.contentType==4){//规章制度
@@ -23,46 +23,86 @@ var AdminPractiveObject={
             }
         }else{
             if(index!=null){
-
-                var content=eval("ue"+index).getContent();
-                if(content==""){
-                    alert("请全部填写")
-                }else{
-                    if($("#avatar"+v)){
-                        if($("#avatar"+v).attr("src")=="img/auditImgDefault.png"){
-                            alert("请上传图片")
-                        }else{
-                            AdminPractiveObject.ajaxC(title,content)
+                if(index==4 || index==6){
+                    var content=eval("ue"+index).getContent();
+                    if(content==""){
+                        alert("请全部填写")
+                    }else{
+                        AdminPractiveObject.ajaxC(content)
+                    }
+                }else {
+                    var content = eval("ue" + index).getContent();
+                    var image=$(".newsBox"+index+" img").attr("src")
+                    if (content == "") {
+                        alert("请全部填写")
+                    } else {
+                        if ($("#avatar" + v)) {
+                            if ($("#avatar" + v).attr("src") == "img/auditImgDefault.png") {
+                                alert("请上传图片")
+                            } else {
+                                AdminPractiveObject.ajaxD(content,image)
+                            }
                         }
                     }
                 }
             }else{
+                var image=$(".newsBox"+b+" img").attr("src")
                 if($("#avatar"+v).attr("src")=="img/auditImgDefault.png"){
                     alert("请上传图片")
+                }else{
+                    AdminPractiveObject.ajaxA(image)
                 }
             }
         }
 
 
-        console.log(content,AdminPractiveObject.contentType)
+        //console.log(content,AdminPractiveObject.contentType)
 
     },
     ajaxT:function(title,content){
+        $.ajax({
+            type:"post",
+            url:urlT+"/api/resource/add.json",
+            data:{
+                token:localStorage.getItem("token"),
+                type:13,
+                resourceName:title,
+                content:content
+            },
+            success:function (data) {
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
+                }else{
+                    alert("上传成功")
+                }
+            }
+
+        })
+    },
+    ajaxA:function(image){
         $.ajax({
             type:"post",
             url:urlT+"/api/baseInfo/add.json",
             data:{
                 token:localStorage.getItem("token"),
                 contentType:AdminPractiveObject.contentType,
-                title:title,
-                content:content
+                image:image
             },
             success:function (data) {
-                console.log(data)
-                if(data.code==200){//成功
-
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
                 }else{
-                    alert(data.message)
+                    alert("上传成功")
                 }
             }
 
@@ -78,11 +118,40 @@ var AdminPractiveObject={
                 content:content
             },
             success:function (data) {
-                console.log(data)
-                if(data.code==200){//成功
-
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
                 }else{
-                    alert(data.message)
+                    alert("上传成功")
+                }
+            }
+
+        })
+    },
+    ajaxD:function(content,image){
+        $.ajax({
+            type:"post",
+            url:urlT+"/api/baseInfo/add.json",
+            data:{
+                token:localStorage.getItem("token"),
+                contentType:AdminPractiveObject.contentType,
+                image:image,
+                content:content
+            },
+            success:function (data) {
+                //console.log(data)
+                if(data.code==10001){
+                    alert("用户未登录")
+                    window.location.href="login.vm"
+                }else if(data.code==10004){
+                    alert("用户未授权")
+                    window.location.href="login.vm"
+                }else{
+                    alert("上传成功")
                 }
             }
 

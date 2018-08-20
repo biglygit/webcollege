@@ -42,15 +42,24 @@ var PracticeManageObject={
     ruleList:function (typeNumber) {
 		$.ajax({
 			type:"post",
-            url:urlT+"/api/baseInfo/searchOne.json",
+            url:urlT+"/api/resource/lists.json",
 			data:{
                 token:localStorage.getItem("token"),
-                contentType:4
+                type:13
 			},
 			success:function (da) {
-				console.log(da)
-                var data1=da.data
-				$(".ruleWord").append("<p>"+data1.resume+"</p>")
+				//if(da.code==200){
+                //console.log(da)
+                var re=da.result;
+                for(var i=0;i<re.length;i++){
+                    $(".ri1 .ruleWord").append("<p myID='"+re[i].id+"'>"+re[i].resourceName+"</p>")
+                }
+                $(".ri1 .ruleWord p").click(function(){
+                    var myID=$(this).attr("myID");
+                    localStorage.setItem("myID",myID);
+                    localStorage.setItem("typeA","rule")
+                    window.location.href="detaiAbout.vm"
+                })
 
             }
 		})
@@ -65,17 +74,22 @@ var PracticeManageObject={
                 contentType:type
             },
             success:function (da) {
-            	console.log(da)
-				var data1=da.data
-				if(index==2 || index==3){
-                    $(".ri"+index+" img").attr("src",data1.image);
-				}else if(index==4 || index==6){
-                    $(".ri"+index+" .word").html(data1.content);
+            	//if(da.code==200){
+                    //console.log(da)
+                    var data1=da.data
+                    if(index==2 || index==3){
+                        $(".ri"+index+" img").attr("src",data1.image);
+                    }else if(index==4 || index==6){
+                        $(".ri"+index+" .word").html(data1.content);
 
-				}else if(index==5){
-                    $(".ri"+index+" img").attr("src",data1.image);
-                    $(".ri"+index+" .word").html(data1.content);
-				}
+                    }else if(index==5){
+                        $(".ri"+index+" img").attr("src",data1.image);
+                        $(".ri"+index+" .word").html(data1.content);
+                    }
+				/*}else if(da.code==10001){
+                    window.location.href="login.vm"
+                }*/
+
 
             }
         })

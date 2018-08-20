@@ -70,9 +70,14 @@ public class SigninController extends BaseController {
         Integer currentId = getCurrentId();
         User user = userService.get(currentId.longValue());
         if (!user.getAdministrator()) {
+            params.put("userId", currentId);
+        }
+        if (user.getAdministrator() && null != userId) {
             params.put("userId", userId);
         }
         params.put("status", 1);
+        logger.info("params :{}",params);
+        logger.info("user :{}",user);
         Page<Signin> page = signinService.searchPageList(pageNum, pageSize, params);
         Map<String, Object> resultMap = Maps.newHashMap();
         List<Signin> singins = page.getResult();
@@ -116,6 +121,17 @@ public class SigninController extends BaseController {
         signin.setUserId(currentId);
         Integer id = signinService.insert(signin);
         return null != id ? Resp.success(id) : Resp.error(AppCode._10003);
+    }
+
+    @RequestMapping(value = Path.SIGNIN_STATE)
+    @ResponseBody
+    public Resp state() {
+        Integer currentId = getCurrentId();
+        logger.info("currentId :{}", currentId);
+        if (signInToday(currentId)) {
+            return Resp.error(AppCode._10011);
+        }
+        return  Resp.success() ;
     }
 
     //是否能够签到

@@ -56,8 +56,10 @@ public class Path {
     //RESOURCE  资源
     public static final String RESOURCE_ADD = "/api/resource/add.json";
     public static final String RESOURCE_GET = "/api/resource/get.json";
+    public static final String RESOURCE_GETS = "/api/resource/gets.json";
     public static final String RESOURCE_UPDATE = "/api/resource/update.json";
     public static final String RESOURCE_LIST = "/api/resource/list.json";
+    public static final String RESOURCE_LISTS = "/api/resource/lists.json";
     public static final String RESOURCE_ALL = "/api/resource/all.json";
 
 
@@ -90,7 +92,7 @@ public class Path {
     public static final String SIGNIN_LIST = "/api/signin/list.json";
     public static final String SIGNIN_ALL = "/api/signin/all.json";
     public static final String CONDITIONAL_QUERY = "/api/signin/conditionalQuery.json";
-
+    public static final String SIGNIN_STATE = "/api/signin/state.json";
 
     //baseInfo 静态页面 基本信息
     public static final String BASEINFO_ADD = "/api/baseInfo/add.json";
@@ -99,4 +101,5 @@ public class Path {
     public static final String BASEINFO_LIST = "/api/baseInfo/list.json";
     public static final String BASEINFO_ALL = "/api/baseInfo/all.json";
     public static final String BASEINFO_SEARCHONE = "/api/baseInfo/searchOne.json";
+
 }
